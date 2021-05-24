@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -12,7 +13,7 @@ import androidx.lifecycle.MutableLiveData
 
 class StorageRead(
     fragment: Fragment,
-    private val pikedFileSet: PikedFileSet = PikedFileSet(5, 30, Conversion.MB)
+    private val pikedFileSet: PikedFileSet = PikedFileSet(2, 30, Conversion.MB)
 ) {
 
     private val context: Context = fragment.requireContext()
@@ -45,6 +46,8 @@ class StorageRead(
             val result = pikedFileSet.add(PikedFile(getNameAndSize(cursor), uri))
             if (result is PikedFileSet.PikedFileSetResult.Success) {
                 _listPickedFiles.value = pikedFileSet.toList()
+            } else if (result is PikedFileSet.PikedFileSetResult.Error) {
+                Toast.makeText(context, " ${result.error}", Toast.LENGTH_SHORT).show()
             }
         }
 
